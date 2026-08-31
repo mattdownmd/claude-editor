@@ -64,7 +64,7 @@ export const ToolChip: React.FC<{
   const { fps } = useVideoConfig();
 
   const enter = remotionSpring({ frame: frame - delay, fps, config: spring.snappy });
-  const color = accent ? theme.cream : theme.ink;
+  const color = accent ? theme.onClay : theme.ink;
 
   return (
     <div

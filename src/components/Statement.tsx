@@ -28,7 +28,7 @@ export const Statement: React.FC<{
   maxWidth?: number;
   weight?: number;
   italicHighlight?: boolean;
-  /** Colour for highlighted words. Flip to `theme.cream` on a dark ground. */
+  /** Colour for highlighted words. Flip to `theme.onClay` on a dark ground. */
   accentColor?: string;
 }> = ({
   text,

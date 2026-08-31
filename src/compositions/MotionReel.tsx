@@ -1,6 +1,6 @@
 import React from "react";
 import { AbsoluteFill, Sequence } from "remotion";
-import { AmbientGround } from "../components/AmbientGround";
+import { Ground } from "../components/Ground";
 import { Camera, CameraLayer } from "../components/motion/Camera";
 import { ShapeMorph } from "../components/motion/ShapeMorph";
 import { WordSwarm } from "../components/motion/WordSwarm";
@@ -52,7 +52,7 @@ const SWARM_WORDS = [
 export const MotionReel: React.FC = () => {
   return (
     <AbsoluteFill>
-      <AmbientGround tone="light" drift={24} durationInFrames={700} />
+      <Ground marks={[{ frame: 0, tone: "cream" }]} />
 
       {/* 01 — morph. One outline travelling, never a cross-fade. */}
       <Sequence durationInFrames={130}>

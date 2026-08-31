@@ -62,7 +62,7 @@ export const BrowserWindow: React.FC<{
   const chromeBg = outline ? "transparent" : theme.accentSoft;
   const pageBg = outline ? "transparent" : theme.bg;
   const urlBg = outline ? theme.deepAlt : theme.deep;
-  const urlText = outline ? theme.bg : theme.cream;
+  const urlText = outline ? theme.bg : theme.onClay;
 
   return (
     <div

@@ -1,7 +1,7 @@
 import React from "react";
 import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
 import { z } from "zod";
-import { AmbientGround } from "../components/AmbientGround";
+import { Ground, GroundMark } from "../components/Ground";
 import { ArollStage } from "../components/ArollStage";
 import { ChapterRail } from "../components/ChapterRail";
 import { CodeWindow } from "../components/CodeWindow";
@@ -11,13 +11,14 @@ import { Shot } from "../components/Shot";
 import { Statement } from "../components/Statement";
 import { StrikeList } from "../components/StrikeList";
 import { StepList } from "../components/StepList";
-import { WorkflowGraph } from "../components/WorkflowGraph";
-import { Camera, CameraLayer } from "../components/motion/Camera";
+import { Cursor } from "../components/motion/Cursor";
+import { Punch } from "../components/motion/Punch";
 import { ToolMorph } from "../components/motion/ToolMorph";
 import { Throw } from "../components/motion/Throw";
 import { timedWordSchema, strikeItemSchema, stepSchema } from "../schemas";
-import { graphNodeSchema, graphEdgeSchema } from "./WorkflowShot";
-import { layout } from "../style";
+import { codeLineSchema } from "./CodeShot";
+import { terminalLineSchema } from "./TerminalShot";
+import { theme, layout } from "../style";
 
 export const introFullSchema = z.object({
   videoSrc: z.string(),
@@ -31,14 +32,14 @@ export const introFullSchema = z.object({
   // §2 — the problem
   constraints: z.array(strikeItemSchema),
 
-  // §3 — the fix, full frame
+  // §3 — the fix, full frame on clay, driven by a cursor
   turnWords: z.array(timedWordSchema),
   turnHighlight: z.array(z.string()),
-  cameraFrame: z.number(),
-  graphFrame: z.number(),
-  stampFrame: z.number(),
-  nodes: z.array(graphNodeSchema),
-  edges: z.array(graphEdgeSchema),
+  codeLines: z.array(codeLineSchema),
+  terminalLines: z.array(terminalLineSchema),
+  interfaceFrame: z.number(),
+  punchFrame: z.number(),
+  releaseFrame: z.number(),
 
   // §4 — what's coming
   promiseHeadline: z.string(),
@@ -49,13 +50,17 @@ export const introFullSchema = z.object({
 });
 
 /**
- * The graphics column beside the docked card.
- *
- * Top-aligned, not centred: each section carries a different amount of content,
- * so centring made the kicker land at a different height every time (290, 337,
- * 220 across the three column sections). A label that moves between sections
- * reads as sloppy — the eye tracks it. Pinning the top holds it still.
+ * The ground changes once, on the turn of the script. Cream carries the setup
+ * and the problem; clay carries the fix and the promise. That single cut does
+ * more structural work than any transition — the viewer knows the subject
+ * changed before a word lands.
  */
+const GROUND: GroundMark[] = [
+  { frame: 0, tone: "cream" },
+  { frame: 476, tone: "clay" },
+];
+
+/** The graphics column beside the docked card. Top-aligned so the kicker holds still. */
 const COLUMN: React.CSSProperties = {
   position: "absolute",
   left: layout.margin,
@@ -68,16 +73,14 @@ const COLUMN: React.CSSProperties = {
 };
 
 /**
- * The complete intro, cut against Intro.mp4's own transcript.
+ * The complete intro, cut against Intro.mp4's own transcript, in the language
+ * of the reference film: flat grounds, interfaces floating as cards, a visible
+ * cursor doing the clicking, and a punch-in when a detail matters.
  *
- * The recording reframes rather than cross-fading, and §3 hands the frame over
- * to graphics entirely — the card goes to `off`, the voice keeps running, and
- * the camera travels through the toolchain. Every cue is a spoken word:
- *
- *   §1  f78  – f250   "…created by Claude Code using Remotion."   docked right
- *   §2  f250 – f476   "no editor / no motion designer"            docked right
- *   §3  f476 – f742   "but nowadays you don't have to"            FULL FRAME
- *   §4  f742 – f975   "the step-by-step guide"                    docked right
+ *   §1  f78  – f250   "…created by Claude Code using Remotion."   cream, docked
+ *   §2  f250 – f476   "no editor / no motion designer"            cream, docked
+ *   §3  f476 – f742   "but nowadays you don't have to"            CLAY, full frame
+ *   §4  f742 – f975   "the step-by-step guide"                    clay, docked
  *   end f975 – f1013  "Let's start."                              full bleed
  */
 export const IntroFull: React.FC<z.infer<typeof introFullSchema>> = ({
@@ -89,11 +92,11 @@ export const IntroFull: React.FC<z.infer<typeof introFullSchema>> = ({
   constraints,
   turnWords,
   turnHighlight,
-  cameraFrame,
-  graphFrame,
-  stampFrame,
-  nodes,
-  edges,
+  codeLines,
+  terminalLines,
+  interfaceFrame,
+  punchFrame,
+  releaseFrame,
   promiseHeadline,
   promiseFrame,
   stepsFrame,
@@ -102,15 +105,28 @@ export const IntroFull: React.FC<z.infer<typeof introFullSchema>> = ({
 }) => {
   const frame = useCurrentFrame();
 
-  // The §3 statement clears the frame as the camera move begins.
-  const turnOut = interpolate(frame, [cameraFrame - 18, cameraFrame], [1, 0], {
+  // Once the punch commits to the terminal the editor stops being the subject.
+  // Letting it hang half-cropped at the top edge reads as a mistake, not a crop.
+  const editorOut = interpolate(frame, [punchFrame - 6, punchFrame + 14], [1, 0], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  // Comes back only once the punch has actually released. Fading it in while
+  // still zoomed puts a 1.5x ghost of the code across the kicker.
+  const editorBack = interpolate(frame, [releaseFrame + 14, releaseFrame + 32], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+
+  // The turn line clears as the interface arrives.
+  const turnOut = interpolate(frame, [interfaceFrame - 16, interfaceFrame], [1, 0], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
 
   return (
     <AbsoluteFill>
-      <AmbientGround tone="light" drift={22} durationInFrames={1013} />
+      <Ground marks={GROUND} />
 
       <ArollStage
         src={videoSrc}
@@ -137,14 +153,14 @@ export const IntroFull: React.FC<z.infer<typeof introFullSchema>> = ({
         <StrikeList items={constraints} fontSize={78} gap={30} tone="serif" enterX={72} />
       </Shot>
 
-      {/* §3 — full frame. The card is gone; only the voice remains. */}
+      {/* §3 — the turn. Ground goes clay, the card leaves, and the tools do the
+          talking: a real interface, a cursor working it, and a punch onto the
+          line that matters. */}
       <Shot from={476} to={742} exitFrames={14} style={{ position: "absolute", inset: 0 }}>
         <div style={{ position: "absolute", left: layout.margin, top: layout.margin }}>
-          <Kicker index="03" label="The fix" delay={478} />
+          <Kicker index="03" label="The fix" delay={478} tone="clay" />
         </div>
 
-        {/* Fixed top rather than centred: words arrive one at a time, so a
-            centred block would jump down the frame the moment it wraps. */}
         <div
           style={{
             position: "absolute",
@@ -158,71 +174,86 @@ export const IntroFull: React.FC<z.infer<typeof introFullSchema>> = ({
             words={turnWords}
             fontSize={118}
             maxWidth={1500}
+            color={theme.onClay}
             highlight={turnHighlight}
+            accentColor={theme.deep}
             italicHighlight
           />
         </div>
 
-        {frame >= cameraFrame - 6 && (
-          <Camera
-            perspective={1900}
-            moveDuration={46}
+        {frame >= interfaceFrame - 8 && (
+          <Punch
+            moveDuration={30}
             marks={[
-              { frame: cameraFrame, z: -60, x: 0, y: 0 },
-              { frame: cameraFrame + 52, z: 720, x: 240, y: 0 },
-              { frame: graphFrame, z: 1480, x: -210, y: 0 },
+              { frame: interfaceFrame, scale: 1, x: 960, y: 540 },
+              // Onto the terminal's result line, not the frame centre. 1.5 is
+              // as far as this can go before the editor above it stops being
+              // readable and starts reading as a broken crop.
+              { frame: punchFrame, scale: 1.5, x: 1130, y: 790 },
+              { frame: releaseFrame, scale: 1, x: 960, y: 540 },
             ]}
           >
-            <CameraLayer z={0} x={0} y={0}>
-              <div style={{ width: 1560 }}>
+            <AbsoluteFill>
+              {/* Light windows, not dark. The reference floats app UI as pale
+                  cards on the clay — a dark panel on this ground goes muddy. */}
+              <div
+                style={{
+                  position: "absolute",
+                  left: 200,
+                  top: 200,
+                  width: 1180,
+                  opacity: Math.max(editorOut, editorBack),
+                }}
+              >
                 <CodeWindow
                   title="IntroFull.tsx"
-                  delay={cameraFrame}
-                  fontSize={34}
-                  lines={[
-                    // Content lands with the window. An empty pane, even for a
-                    // few frames, reads as a loading state.
-                    { text: "// every cue is a spoken word", frame: cameraFrame },
-                    { text: "<TimedWords words={words} />", frame: cameraFrame + 8 },
-                  ]}
+                  delay={interfaceFrame}
+                  fontSize={28}
+                  tone="light"
+                  lines={codeLines}
                 />
               </div>
-            </CameraLayer>
 
-            <CameraLayer z={-780} x={240} y={0}>
-              <div style={{ width: 1560 }}>
+              <div style={{ position: "absolute", left: 540, top: 656, width: 1180 }}>
                 <TerminalWindow
                   title="zsh"
-                  delay={cameraFrame + 44}
-                  fontSize={34}
-                  lines={[
-                    { text: "claude", kind: "command", frame: cameraFrame + 46 },
-                    { text: "IntroFull.tsx written", kind: "done", frame: cameraFrame + 74 },
-                  ]}
+                  delay={interfaceFrame + 28}
+                  fontSize={28}
+                  tone="light"
+                  lines={terminalLines}
                 />
               </div>
-            </CameraLayer>
 
-            <CameraLayer z={-1560} x={-210} y={0}>
-              <div style={{ width: 1640 }}>
-                <WorkflowGraph
-                  nodes={nodes}
-                  edges={edges}
-                  width={1640}
-                  height={230}
-                  delay={graphFrame}
-                  stampFrame={stampFrame}
-                />
-              </div>
-            </CameraLayer>
-          </Camera>
+              {/* Inside the punch on purpose: a real screen recording magnifies
+                  its cursor along with everything else. */}
+              <Cursor
+                from={interfaceFrame + 8}
+                to={releaseFrame + 26}
+                size={54}
+                travel={20}
+                stops={[
+                  { frame: interfaceFrame + 8, x: 1500, y: 420 },
+                  { frame: interfaceFrame + 22, x: 1080, y: 330, click: true },
+                  { frame: interfaceFrame + 52, x: 900, y: 742, click: true },
+                  { frame: punchFrame + 26, x: 1180, y: 800 },
+                ]}
+              />
+            </AbsoluteFill>
+          </Punch>
         )}
+
       </Shot>
 
       {/* §4 — the roadmap. Steps are thrown in rather than faded up. */}
       <Shot from={742} to={975} exitFrames={14} style={{ ...COLUMN, gap: 40 }}>
-        <Kicker index="04" label="What's coming" delay={744} />
-        <Statement text={promiseHeadline} delay={promiseFrame} fontSize={78} maxWidth={930} />
+        <Kicker index="04" label="What's coming" delay={744} tone="clay" />
+        <Statement
+          text={promiseHeadline}
+          delay={promiseFrame}
+          fontSize={78}
+          maxWidth={930}
+          color={theme.onClay}
+        />
         <div style={{ display: "flex", flexDirection: "column", gap: 26 }}>
           {steps.map((step, i) => (
             <Throw
@@ -231,13 +262,19 @@ export const IntroFull: React.FC<z.infer<typeof introFullSchema>> = ({
               from={{ x: -560, y: 0 }}
               spin={-3}
             >
-              <StepList steps={[step]} animate={false} fontSize={44} startIndex={i} />
+              <StepList
+                steps={[step]}
+                animate={false}
+                fontSize={44}
+                startIndex={i}
+                tone="clay"
+              />
             </Throw>
           ))}
         </div>
       </Shot>
 
-      <ChapterRail ticks={[250, 476, 742]} total={1013} from={70} to={966} />
+      <ChapterRail ticks={[250, 476, 742]} total={1013} from={70} to={966} clayFrom={476} />
     </AbsoluteFill>
   );
 };

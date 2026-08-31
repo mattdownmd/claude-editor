@@ -1,7 +1,7 @@
 import React from "react";
 import { AbsoluteFill } from "remotion";
 import { z } from "zod";
-import { AmbientGround } from "../components/AmbientGround";
+import { Ground } from "../components/Ground";
 import { BrowserWindow } from "../components/BrowserWindow";
 import { Kicker } from "../components/Kicker";
 import { Statement } from "../components/Statement";
@@ -35,7 +35,7 @@ export const BrowserShot: React.FC<z.infer<typeof browserShotSchema>> = ({
 
   return (
     <AbsoluteFill>
-      <AmbientGround tone={deep ? "deep" : "light"} drift={22} />
+      <Ground marks={[{ frame: 0, tone: deep ? "clay" : "cream" }]} />
       <AbsoluteFill
         style={{
           padding: layout.margin,
@@ -54,7 +54,7 @@ export const BrowserShot: React.FC<z.infer<typeof browserShotSchema>> = ({
             maxWidth={1200}
             color={deep ? theme.bg : theme.ink}
             highlight={highlight}
-            accentColor={deep ? theme.cream : theme.accent}
+            accentColor={deep ? theme.onClay : theme.accent}
             italicHighlight
           />
         </div>

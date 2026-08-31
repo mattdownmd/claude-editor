@@ -1,7 +1,7 @@
 import React from "react";
 import { AbsoluteFill } from "remotion";
 import { z } from "zod";
-import { AmbientGround } from "../components/AmbientGround";
+import { Ground } from "../components/Ground";
 import { WorkflowGraph } from "../components/WorkflowGraph";
 import { Kicker } from "../components/Kicker";
 import { Statement } from "../components/Statement";
@@ -52,7 +52,7 @@ export const WorkflowShot: React.FC<z.infer<typeof workflowShotSchema>> = ({
 }) => {
   return (
     <AbsoluteFill>
-      <AmbientGround tone="light" grid drift={20} />
+      <Ground marks={[{ frame: 0, tone: "cream" }]} />
       <AbsoluteFill style={{ padding: layout.margin }}>
         <div style={{ display: "flex", flexDirection: "column", gap: 34 }}>
           <Kicker index={kickerIndex} label={kickerLabel} delay={0} />

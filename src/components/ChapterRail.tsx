@@ -15,8 +15,11 @@ export const ChapterRail: React.FC<{
   from: number;
   to: number;
   y?: number;
-}> = ({ ticks, total, from, to, y = 1022 }) => {
+  /** Frame the rail flips to its clay-ground colours. */
+  clayFrom?: number;
+}> = ({ ticks, total, from, to, y = 1022, clayFrom }) => {
   const frame = useCurrentFrame();
+  const onClay = clayFrom !== undefined && frame >= clayFrom;
 
   const width = layout.width - layout.margin * 2;
   const progress = interpolate(frame, [0, total], [0, 1], {
@@ -37,7 +40,7 @@ export const ChapterRail: React.FC<{
         width,
         height: 4,
         borderRadius: 2,
-        backgroundColor: theme.line,
+        backgroundColor: onClay ? theme.clayLine : theme.line,
         opacity,
       }}
     >
@@ -47,7 +50,7 @@ export const ChapterRail: React.FC<{
           inset: 0,
           width: width * progress,
           borderRadius: 2,
-          backgroundColor: theme.accent,
+          backgroundColor: onClay ? theme.onClay : theme.accent,
         }}
       />
       {ticks.map((tick) => (
@@ -60,7 +63,7 @@ export const ChapterRail: React.FC<{
             width: 3,
             height: 14,
             borderRadius: 2,
-            backgroundColor: theme.line,
+            backgroundColor: onClay ? theme.clayLine : theme.line,
           }}
         />
       ))}

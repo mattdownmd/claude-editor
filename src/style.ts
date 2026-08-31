@@ -1,45 +1,63 @@
 /**
- * Design tokens. Colours come from references/color palette.png — sampled from
- * the file, not eyeballed. Nothing here is invented; the only addition to the
- * ten swatches is pure white, used for cards that need to lift off the ground.
+ * Design tokens, sampled from the reference film in
+ * references/ — not eyeballed. Two grounds carry the whole system: a warm
+ * parchment cream and Anthropic's clay. Shots alternate between them.
+ *
+ * The clay is Anthropic's own brand colour. That reads as deliberate on a
+ * channel about Claude Code; shift the hue here if you want it to be yours.
  */
 export const theme = {
-  /** Canvas. Off-white with a cool cast — never pure white. */
-  bg: "#EDEEE8",
-  /** A card that needs to sit above the ground. */
-  surface: "#FFFFFF",
+  /** Parchment ground. The default. Flat — never a gradient. */
+  bg: "#E9DED1",
+  /** Clay ground. The alternate. Use it to mark a change of subject. */
+  clay: "#DE8162",
+  /** A window or card sitting on either ground. Warm, not pure white. */
+  surface: "#FCFAF2",
+  /** Pure white, for the inner panes of an interface only. */
+  white: "#FFFFFF",
 
-  /** Primary type. Near-black with green in it. */
-  ink: "#091409",
+  /** Primary type on cream. Warm near-black. */
+  ink: "#1A1312",
   /** Secondary type, sub-labels. */
-  muted: "#4C524A",
+  muted: "#6B5B52",
   /** Tertiary — inactive states and struck-through text. Never body copy. */
-  subtle: "#909289",
-  /** Hairlines and card borders. */
-  line: "#BBC1BB",
+  subtle: "#A2907F",
+  /** Hairlines and card borders on cream. */
+  line: "#D6C7B8",
 
-  /** Emphasis on a light ground. One idea per shot. */
-  accent: "#3F4C33",
-  /** Pale olive fill behind accented type, and keywords on a dark ground. */
-  accentSoft: "#BDC1A5",
-  /** Emphasis on a dark ground — the warm note in the palette. Use sparingly. */
-  cream: "#EDEACE",
+  /** Emphasis on cream — the clay, used as ink. One idea per shot. */
+  accent: "#C2603F",
+  /** Soft clay fill behind accented type. */
+  accentSoft: "#F2D9CD",
+  /** Type and marks on the clay ground. */
+  onClay: "#FFF6F2",
+  /** Hairlines and inactive marks on the clay ground. */
+  clayLine: "#E9A88F",
 
-  /** Dark panel ground: windows, code, terminals. */
-  deep: "#23311A",
+  /** Dark panel ground: code and terminals. Warm, not neutral black. */
+  deep: "#241A16",
   /** Chrome inside a dark panel — title bars, raised rows. */
-  deepAlt: "#3F4C33",
-  /** Mid tone. Connectors, dots, muted marks. */
-  olive: "#6C6F5B",
+  deepAlt: "#3A2A23",
+  /** Mid tone. Connectors, window dots, muted marks. */
+  olive: "#8A7263",
+} as const;
+
+/** Syntax roles for code on a light window — the default on the clay ground. */
+export const codeLight = {
+  text: "#2A211C",
+  keyword: "#B4522E",
+  string: "#7A5C36",
+  comment: "#A2907F",
+  punct: "#8A7263",
 } as const;
 
 /** Syntax roles for code shown on `theme.deep`. */
 export const code = {
-  text: "#EDEEE8",
-  keyword: "#BDC1A5",
-  string: "#EDEACE",
-  comment: "#909289",
-  punct: "#909289",
+  text: "#F3EAE2",
+  keyword: "#E8A184",
+  string: "#D8C7A8",
+  comment: "#8A7263",
+  punct: "#A2907F",
 } as const;
 
 export const font = {
@@ -68,21 +86,21 @@ export const layout = {
 } as const;
 
 export const radius = {
-  window: 26,
-  browser: 28,
-  card: 22,
-  tab: 16,
+  window: 22,
+  browser: 24,
+  card: 18,
+  tab: 14,
   pill: 999,
 } as const;
 
 /**
- * Windows float; the canvas does not. These are wide and very soft — a hard
- * shadow reads as a sticker, which is the opposite of what we want.
+ * Windows float; the ground does not. Wide and very soft — a tight dark shadow
+ * reads as a sticker, which is the opposite of what we want.
  */
 export const shadow = {
-  window: "0 40px 90px -34px rgba(9, 20, 9, 0.30)",
-  card: "0 24px 56px -28px rgba(9, 20, 9, 0.22)",
-  lift: "0 10px 28px -14px rgba(9, 20, 9, 0.16)",
+  window: "0 44px 96px -36px rgba(36, 26, 22, 0.34)",
+  card: "0 26px 60px -30px rgba(36, 26, 22, 0.26)",
+  lift: "0 10px 28px -14px rgba(36, 26, 22, 0.18)",
 } as const;
 
 export const spring = {

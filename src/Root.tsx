@@ -200,19 +200,20 @@ export const RemotionRoot: React.FC = () => {
             { text: "to.", startMs: 18480, endMs: 19030 },
           ],
           turnHighlight: ["to."],
-          cameraFrame: 556,
-          graphFrame: 664,
-          stampFrame: 706,
-          nodes: [
-            { id: "rec", label: "Recording", rows: ["intro.mp4", "just talk"], x: 0, y: 0, w: 350, h: 226, frame: 664 },
-            { id: "claude", label: "Claude Code", rows: ["or Codex", "reads STYLE.md"], x: 448, y: 0, w: 372, h: 226, frame: 676 },
-            { id: "remotion", label: "Remotion", rows: ["renders the shots"], x: 918, y: 0, w: 350, h: 226, frame: 688 },
-            { id: "out", label: "Animations", rows: ["ready to cut"], x: 1366, y: 0, w: 300, h: 226, accent: true, frame: 700 },
+
+          // "because Claude Code or Codex can do this for you" — f554 onward.
+          interfaceFrame: 556,
+          punchFrame: 640,
+          releaseFrame: 700,
+          // Content lands with its window. An empty pane, even for a few
+          // frames, reads as a loading state.
+          codeLines: [
+            { text: "// every cue is a spoken word", frame: 556 },
+            { text: "<TimedWords words={words} />", frame: 564 },
           ],
-          edges: [
-            { from: "rec", to: "claude", frame: 674 },
-            { from: "claude", to: "remotion", frame: 686 },
-            { from: "remotion", to: "out", frame: 698 },
+          terminalLines: [
+            { text: "npx remotion render IntroFull", kind: "command" as const, frame: 584 },
+            { text: "1013 frames, 33.8s", kind: "done" as const, frame: 632 },
           ],
 
           promiseHeadline: "The step-by-step guide",

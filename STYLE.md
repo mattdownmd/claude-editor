@@ -2,22 +2,31 @@
 
 The persistent style reference. Apply it to every animation request.
 
-Colours are sampled from `references/color palette.png` — a muted sage, olive and
-forest range with one warm cream note. The feel to aim for: a calm, expensive
-product explainer. Interfaces float on a soft ground. Nothing shouts.
+Colours are sampled from the reference film in `references/` — Anthropic's clay
+and a warm parchment cream. The feel to aim for: a calm, expensive product
+explainer. Interfaces float as pale cards on a flat ground, a cursor does the
+clicking, and the camera punches in when a detail matters. Nothing shouts.
+
+The clay is Anthropic's own brand colour. That reads as deliberate on a channel
+about Claude Code; shift the hue in `src/style.ts` if you want it to be yours.
 
 ## Look and feel
 
-- **Ground**: off-white `#EDEEE8`. Never pure white — white is only for a card
-  that has to lift off the ground.
-- **Ink**: near-black green `#091409` for primary type, `#4C524A` for secondary,
-  `#909289` for anything inactive or struck through.
-- **Accent**: forest `#3F4C33` on a light ground. On a dark panel the accent
-  flips to cream `#EDEACE`. Same role, different surface — one emphasis per shot.
-- **Ground**: never a flat fill. `AmbientGround` lays a few very soft colour
-  washes over the base so the frame has air in it. They drift a few pixels
-  across the composition — the only ambient motion allowed, and it reads as
-  atmosphere rather than animation. Pass `drift={0}` to stop it dead.
+- **Two grounds, both flat**: parchment `#E9DED1` and clay `#DE8162`. No
+  gradient, no texture, no drift — all the depth in the frame comes from cards
+  floating above a solid colour. Atmosphere on the ground is what made the
+  earlier version of this project look like a template.
+- **The ground change is the section break.** `Ground` cuts between tones in six
+  frames. Use it once, on the turn of the script — cream for the setup and the
+  problem, clay for the fix and the payoff. That single cut does more structural
+  work than any transition.
+- **Ink**: warm near-black `#1A1312` on cream, `#FFF6F2` on clay. `#6B5B52` for
+  secondary, `#A2907F` for anything inactive or struck through.
+- **Accent**: `#C2603F` on cream. On clay the accent flips to `#FFF6F2`. Same
+  role, different surface — one emphasis per shot.
+- **Windows are pale, not dark.** A dark panel on the clay goes muddy. Use
+  `tone="light"` on `CodeWindow` and `TerminalWindow`; the dark tone is for a
+  cream ground only.
 - **Depth**: the canvas stays flat. Only **windows and cards** get a shadow, and
   it is always wide and very soft (`shadow.window`, `shadow.card`). A tight dark
   shadow reads as a sticker.
@@ -97,6 +106,8 @@ the Studio plays all four back to back.
 
 | Mechanic | What it does | Reach for it when |
 |---|---|---|
+| `Cursor` | A macOS pointing hand that travels on a spring and dips on click. | Any interface shot. This is what makes a screen read as *used* rather than screenshotted. |
+| `Punch` | Scales the frame around a focal point — a zoom onto a detail. | The narration names one thing on screen. Hold the wide view for a beat first. |
 | `ShapeMorph` | One outline travels into another. Real path interpolation, no cross-fade. | A shot would otherwise cut between two objects. |
 | `WordSwarm` | Words scatter on a noise field, then fly home on the frame they are spoken. | A sentence is the subject and you want the transcript visible as motion. |
 | `Camera` / `CameraLayer` | Layers hold still at fixed depths; the camera travels through them. | Several interfaces need showing in sequence. |
@@ -139,7 +150,7 @@ Reusable primitives in `src/components/`. Prefer these over new one-off code.
 
 | Component | Use it for |
 |---|---|
-| `AmbientGround` | The washed ground every shot sits on. Optional dotted grid. |
+| `Ground` | The flat ground, and the cut between cream and clay. |
 | `Statement` | A serif headline. Takes fixed timing, or transcript words to key to speech. |
 | `Window` | The base floating panel — title bar, dots, dark or light. |
 | `BrowserWindow` | A browser as a graphic object — `outline` on dark, `solid` on light. |
@@ -160,6 +171,21 @@ Reusable primitives in `src/components/`. Prefer these over new one-off code.
 
 All take a `delay` in frames and animate with `spring()` using the presets in
 `src/style.ts`.
+
+## Interfaces, the reference way
+
+Three rules, all taken from the reference film:
+
+- **Put a cursor on it.** An interface with no pointer is a screenshot. `Cursor`
+  travels on a spring and dips when it clicks — both matter; a linear cursor
+  reads as a diagram and a click with no dip reads as a ripple effect.
+- **Let windows bleed off the frame.** A card that sits fully inside the frame
+  with margin all round reads as a slide. The reference crops almost every
+  window against an edge.
+- **Punch in when the narration names something.** Put `Cursor` *inside* the
+  `Punch`, not outside it — a real screen recording magnifies its pointer along
+  with everything else. And clear whatever is no longer the subject rather than
+  leaving it half-cropped at the frame edge.
 
 ## Windows and interfaces
 

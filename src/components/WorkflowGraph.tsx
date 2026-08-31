@@ -45,7 +45,7 @@ const Stamp: React.FC<{ delay: number; x: number; y: number }> = ({ delay, x, y 
         width: 56,
         height: 56,
         borderRadius: "50%",
-        backgroundColor: theme.cream,
+        backgroundColor: theme.onClay,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -178,7 +178,7 @@ export const WorkflowGraph: React.FC<{
                 fontSize: 27,
                 fontWeight: 700,
                 letterSpacing: "-0.01em",
-                color: dark ? theme.cream : theme.ink,
+                color: dark ? theme.onClay : theme.ink,
               }}
             >
               <div
@@ -186,7 +186,7 @@ export const WorkflowGraph: React.FC<{
                   width: 14,
                   height: 14,
                   borderRadius: "50%",
-                  backgroundColor: dark ? theme.cream : theme.accent,
+                  backgroundColor: dark ? theme.onClay : theme.accent,
                 }}
               />
               {node.label}

@@ -1,6 +1,6 @@
 import React from "react";
 import { Window, WindowLine } from "./Window";
-import { code, theme } from "../style";
+import { code, codeLight, theme } from "../style";
 import { monoFont } from "../fonts";
 
 export type CodeLine = {
@@ -32,11 +32,11 @@ const KEYWORDS = new Set([
  * screen-accurate impression, not a real parser — it handles the four things
  * the eye actually registers at 1080p: comments, strings, keywords, and tags.
  */
-const tokenize = (line: string): Token[] => {
+const tokenize = (line: string, c: typeof code): Token[] => {
   const comment = line.indexOf("//");
   if (comment >= 0) {
     const before = line.slice(0, comment);
-    return [...tokenize(before), { t: line.slice(comment), c: code.comment }];
+    return [...tokenize(before, c), { t: line.slice(comment), c: c.comment }];
   }
 
   const out: Token[] = [];
@@ -45,12 +45,12 @@ const tokenize = (line: string): Token[] => {
   let m: RegExpExecArray | null;
 
   while ((m = re.exec(line)) !== null) {
-    if (m[1]) out.push({ t: m[1], c: code.string });
-    else if (m[2]) out.push({ t: m[2], c: code.keyword });
-    else if (m[3]) out.push({ t: m[3], c: KEYWORDS.has(m[3]) ? code.keyword : code.text });
-    else if (m[4]) out.push({ t: m[4], c: code.string });
-    else if (m[5]) out.push({ t: m[5], c: code.punct });
-    else out.push({ t: m[6], c: code.text });
+    if (m[1]) out.push({ t: m[1], c: c.string });
+    else if (m[2]) out.push({ t: m[2], c: c.keyword });
+    else if (m[3]) out.push({ t: m[3], c: KEYWORDS.has(m[3]) ? c.keyword : c.text });
+    else if (m[4]) out.push({ t: m[4], c: c.string });
+    else if (m[5]) out.push({ t: m[5], c: c.punct });
+    else out.push({ t: m[6], c: c.text });
   }
 
   return out;
@@ -68,6 +68,7 @@ export const CodeWindow: React.FC<{
   fontSize?: number;
   width?: number | string;
   showLineNumbers?: boolean;
+  tone?: "dark" | "light";
 }> = ({
   lines,
   title = "IntroFull.tsx",
@@ -76,9 +77,11 @@ export const CodeWindow: React.FC<{
   fontSize = 26,
   width = "100%",
   showLineNumbers = true,
+  tone = "light",
 }) => {
+  const c = tone === "light" ? (codeLight as unknown as typeof code) : code;
   return (
-    <Window title={title} tone="dark" delay={delay} width={width} pad={30}>
+    <Window title={title} tone={tone} delay={delay} width={width} pad={30}>
       <div
         style={{
           display: "flex",
@@ -98,7 +101,7 @@ export const CodeWindow: React.FC<{
             {showLineNumbers && (
               <span
                 style={{
-                  color: theme.olive,
+                  color: tone === "light" ? theme.subtle : theme.olive,
                   minWidth: fontSize * 1.1,
                   textAlign: "right",
                   fontVariantNumeric: "tabular-nums",
@@ -108,7 +111,7 @@ export const CodeWindow: React.FC<{
               </span>
             )}
             <span>
-              {tokenize(line.text).map((tok, j) => (
+              {tokenize(line.text, c).map((tok, j) => (
                 <span key={j} style={{ color: tok.c }}>
                   {tok.t}
                 </span>

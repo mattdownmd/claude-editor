@@ -5,17 +5,19 @@ import { theme, layout, radius } from "../style";
 import { displayFont, monoFont, serifFont } from "../fonts";
 
 const SWATCHES: { name: string; value: string; note: string }[] = [
-  { name: "bg", value: theme.bg, note: "canvas" },
-  { name: "surface", value: theme.surface, note: "raised card" },
+  { name: "bg", value: theme.bg, note: "parchment ground" },
+  { name: "clay", value: theme.clay, note: "clay ground" },
+  { name: "surface", value: theme.surface, note: "window / card" },
   { name: "ink", value: theme.ink, note: "primary type" },
   { name: "muted", value: theme.muted, note: "secondary type" },
   { name: "subtle", value: theme.subtle, note: "inactive / struck" },
   { name: "line", value: theme.line, note: "hairline" },
   { name: "accent", value: theme.accent, note: "emphasis on light" },
   { name: "accentSoft", value: theme.accentSoft, note: "fills, keywords" },
-  { name: "cream", value: theme.cream, note: "emphasis on dark" },
+  { name: "onClay", value: theme.onClay, note: "type on clay" },
   { name: "deep", value: theme.deep, note: "window ground" },
-  { name: "deepAlt", value: theme.deepAlt, note: "window chrome" },
+  { name: "deepAlt", value: theme.deepAlt, note: "dark window chrome" },
+  { name: "clayLine", value: theme.clayLine, note: "hairline on clay" },
   { name: "olive", value: theme.olive, note: "connectors, dots" },
 ];
 
@@ -49,7 +51,7 @@ export const DesignSystem: React.FC = () => {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
+              gridTemplateColumns: "repeat(4, 1fr)",
               gap: 18,
             }}
           >
@@ -65,7 +67,7 @@ export const DesignSystem: React.FC = () => {
               >
                 <div
                   style={{
-                    height: 84,
+                    height: 68,
                     backgroundColor: s.value,
                     borderBottom: `2px solid ${theme.line}`,
                   }}
@@ -157,10 +159,8 @@ export const DesignSystem: React.FC = () => {
               maxWidth: 620,
             }}
           >
-            Sampled from{" "}
-            <span style={{ fontFamily: monoFont, color: theme.accent }}>
-              references/color palette.png
-            </span>
+            Sampled from the reference film in{" "}
+            <span style={{ fontFamily: monoFont, color: theme.accent }}>references/</span>
             . Import from{" "}
             <span style={{ fontFamily: monoFont, color: theme.accent }}>src/style.ts</span> — never
             hardcode a hex in a composition.

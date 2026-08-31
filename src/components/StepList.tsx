@@ -17,7 +17,18 @@ export const StepList: React.FC<{
   animate?: boolean;
   /** Numbering offset, for when rows are rendered one at a time. */
   startIndex?: number;
-}> = ({ steps, delay = 0, stagger = 9, fontSize = 62, animate = true, startIndex = 0 }) => {
+  /** `clay` when the list sits on the clay ground. */
+  tone?: "cream" | "clay";
+}> = ({
+  steps,
+  delay = 0,
+  stagger = 9,
+  fontSize = 62,
+  animate = true,
+  startIndex = 0,
+  tone = "cream",
+}) => {
+  const onClay = tone === "clay";
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
@@ -49,14 +60,14 @@ export const StepList: React.FC<{
                 width: 92,
                 height: 92,
                 borderRadius: 20,
-                backgroundColor: theme.accent,
+                backgroundColor: onClay ? theme.onClay : theme.accent,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 fontFamily: displayFont,
                 fontSize: 44,
                 fontWeight: 800,
-                color: theme.bg,
+                color: onClay ? theme.clay : theme.bg,
               }}
             >
               {startIndex + i + 1}
@@ -68,7 +79,7 @@ export const StepList: React.FC<{
                   fontSize,
                   fontWeight: 800,
                   letterSpacing: "-0.02em",
-                  color: theme.ink,
+                  color: onClay ? theme.onClay : theme.ink,
                   lineHeight: 1.1,
                 }}
               >
@@ -80,7 +91,7 @@ export const StepList: React.FC<{
                     fontFamily: displayFont,
                     fontSize: 28,
                     fontWeight: 500,
-                    color: theme.muted,
+                    color: onClay ? theme.accentSoft : theme.muted,
                   }}
                 >
                   {step.sub}

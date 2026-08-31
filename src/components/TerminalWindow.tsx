@@ -19,16 +19,28 @@ export type TerminalLine = {
 
 const MARKER: Record<string, string> = { command: "$", done: "✓", output: " " };
 
-const LineText: React.FC<{ line: TerminalLine; landed: number; fontSize: number }> = ({
-  line,
-  landed,
-  fontSize,
-}) => {
+const LineText: React.FC<{
+  line: TerminalLine;
+  landed: number;
+  fontSize: number;
+  tone: "dark" | "light";
+}> = ({ line, landed, fontSize, tone }) => {
   const frame = useCurrentFrame();
   const kind = line.kind ?? "output";
 
+  const light = tone === "light";
   const color =
-    kind === "command" ? code.text : kind === "done" ? theme.cream : theme.accentSoft;
+    kind === "command"
+      ? light
+        ? theme.ink
+        : code.text
+      : kind === "done"
+        ? light
+          ? theme.accent
+          : theme.onClay
+        : light
+          ? theme.muted
+          : theme.accentSoft;
 
   // Commands type out; output and results arrive whole.
   let shown = line.text;
@@ -49,7 +61,7 @@ const LineText: React.FC<{ line: TerminalLine; landed: number; fontSize: number 
     <div style={{ display: "flex", gap: 18, whiteSpace: "pre" }}>
       <span
         style={{
-          color: kind === "done" ? theme.cream : theme.subtle,
+          color: kind === "done" ? (light ? theme.accent : theme.onClay) : theme.subtle,
           minWidth: fontSize * 0.8,
         }}
       >
@@ -57,7 +69,7 @@ const LineText: React.FC<{ line: TerminalLine; landed: number; fontSize: number 
       </span>
       <span style={{ color }}>
         {shown}
-        {caret && <span style={{ color: theme.accentSoft }}>▋</span>}
+        {caret && <span style={{ color: light ? theme.accent : theme.accentSoft }}>▋</span>}
       </span>
     </div>
   );
@@ -75,9 +87,18 @@ export const TerminalWindow: React.FC<{
   stagger?: number;
   fontSize?: number;
   width?: number | string;
-}> = ({ lines, title = "zsh", delay = 0, stagger = 24, fontSize = 26, width = "100%" }) => {
+  tone?: "dark" | "light";
+}> = ({
+  lines,
+  title = "zsh",
+  delay = 0,
+  stagger = 24,
+  fontSize = 26,
+  width = "100%",
+  tone = "light",
+}) => {
   return (
-    <Window title={title} tone="dark" delay={delay} width={width} pad={30}>
+    <Window title={title} tone={tone} delay={delay} width={width} pad={30}>
       <div
         style={{
           display: "flex",
@@ -92,7 +113,7 @@ export const TerminalWindow: React.FC<{
           const landed = line.frame ?? delay + 10 + i * stagger;
           return (
             <WindowLine key={i} delay={landed}>
-              <LineText line={line} landed={landed} fontSize={fontSize} />
+              <LineText line={line} landed={landed} fontSize={fontSize} tone={tone} />
             </WindowLine>
           );
         })}

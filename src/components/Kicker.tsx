@@ -13,11 +13,12 @@ export const Kicker: React.FC<{
   label: string;
   delay?: number;
   /** `deep` when the kicker sits on a dark ground. */
-  tone?: "light" | "deep";
+  tone?: "light" | "deep" | "clay";
 }> = ({ index, label, delay = 0, tone = "light" }) => {
-  const deep = tone === "deep";
-  const mark = deep ? theme.cream : theme.accent;
-  const text = deep ? theme.accentSoft : theme.olive;
+  const mark =
+    tone === "deep" ? theme.onClay : tone === "clay" ? theme.onClay : theme.accent;
+  const text =
+    tone === "deep" ? theme.accentSoft : tone === "clay" ? theme.accentSoft : theme.olive;
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
