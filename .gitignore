@@ -1,0 +1,22 @@
+node_modules/
+out/
+whisper.cpp/
+.DS_Store
+*.log
+
+# Personal recordings — drop your own in these folders, they stay local.
+public/video/*
+!public/video/README.md
+public/audio/*
+!public/audio/README.md
+
+# Generated per-recording transcripts — regenerate with `npm run transcribe`.
+src/data/*
+!src/data/.gitkeep
+
+# Personal reference material — screenshots pulled from other products/sites
+# for style research. Not this repo's to redistribute.
+visual inspiration/
+
+# Superseded work kept locally for reference. See _archive/README.md.
+_archive/

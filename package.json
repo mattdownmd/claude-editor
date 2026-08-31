@@ -1,0 +1,42 @@
+{
+  "name": "video-motion-editor",
+  "version": "1.0.0",
+  "description": "Remotion + Claude Code template: turn a talking-head recording into motion graphics timed to its own transcript.",
+  "scripts": {
+    "dev": "remotion studio",
+    "studio": "remotion studio",
+    "build": "remotion render",
+    "upgrade": "remotion upgrade",
+    "transcribe": "node scripts/transcribe.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "@remotion/animation-utils": "^4.0.518",
+    "@remotion/captions": "^4.0.518",
+    "@remotion/cli": "^4.0.518",
+    "@remotion/google-fonts": "^4.0.518",
+    "@remotion/install-whisper-cpp": "^4.0.518",
+    "@remotion/layout-utils": "^4.0.518",
+    "@remotion/media-utils": "^4.0.518",
+    "@remotion/motion-blur": "^4.0.518",
+    "@remotion/noise": "^4.0.518",
+    "@remotion/paths": "^4.0.518",
+    "@remotion/player": "^4.0.518",
+    "@remotion/shapes": "^4.0.518",
+    "@remotion/transitions": "^4.0.518",
+    "@remotion/zod-types": "^4.0.518",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "remotion": "^4.0.518",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^26.4.0",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.5",
+    "typescript": "^7.0.2"
+  }
+}
