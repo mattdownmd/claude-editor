@@ -155,9 +155,16 @@ export const RemotionRoot: React.FC = () => {
         }}
       />
 
-      {/* ---------- the finished intro ---------- */}
+      {/* ---------- worked example ---------- */}
       {/*
-        Intro.mp4 end to end (33.77s = 1013 frames) with every graphic cut in.
+        This is the finished intro from this project's own build log, kept as
+        a worked example — the props below are one real recording's transcript,
+        cut end to end (33.77s = 1013 frames). It needs a video at exactly
+        public/video/intro.mp4 to render, which this repo does NOT ship (see
+        public/video/README.md) — on a fresh clone this composition errors in
+        the Studio until you add one. Every composition above this one needs
+        no setup at all and works immediately.
+
         Section frames live in the component; the props here are the content.
         Whisper mis-heard "Claude Code" as "clock code" and "Remotion" as
         "rem|otion" — the timings are its, the spellings are corrected.
