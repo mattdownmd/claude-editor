@@ -4,7 +4,7 @@ A Remotion project for turning a talking-head recording into motion graphics —
 
 ## Always
 
-- Read `STYLE.md` before building or editing any composition. It is the single source of truth for look and feel. If the user has added reference images (`references/`), study them and update `STYLE.md` from them first: colours, fonts, layouts, and how things should move (they are stills, so you decide the motion).
+- Read `STYLE.md` before building or editing any composition. It is the single source of truth for look and feel. If the user has added reference images (`references/`, or any other folder they point you to: copy them into `references/`), study them and update `STYLE.md` from them first: colours, fonts, layouts, and how things should move (they are stills, so you decide the motion).
 - Import design tokens from `src/style.ts` — never hardcode colors, font sizes, or spacing.
 - Register every new composition in `src/Root.tsx` with a zod `schema` and `defaultProps` so it is editable in the Studio.
 - **Never grade or colour-correct the user's face.** No filter, tint, grain or vignette over the talking head. It stays exactly as recorded.

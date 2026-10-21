@@ -11,6 +11,15 @@ you say "Claude" at 5510ms → 5510 / 1000 × 30fps = frame 165
 
 The land is that frame, 3 frames early so it doesn't read late.
 
+## Start here
+
+1. `npm install`
+2. Put your motion-graphic designs (images from Pinterest) in `references/`.
+3. Put your raw recording in `public/video/` (it stays on your computer, never uploaded).
+4. Open this folder in Claude Code and say: *"Edit public/video/<your file>.mp4 with this project. Study the images in references/ and update the style from them, cut the pauses and bad takes, build motion graphics timed to my words, check your own work, and show me a draft first."*
+
+Claude installs anything else it needs (ffmpeg, whisper.cpp) after asking you.
+
 ## What's in here
 
 This isn't a blank Remotion starter — it's a working system. Everything below
