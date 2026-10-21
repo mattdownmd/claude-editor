@@ -1,4 +1,4 @@
-# Video Motion Editor
+# Claude Editor
 
 A [Remotion](https://remotion.dev) template driven by [Claude Code](https://claude.com/claude-code):
 record yourself talking, and Claude builds motion graphics timed to your own
@@ -90,7 +90,7 @@ not Claude; it only ever touches this project's own `whisper.cpp/` folder.
 
 ```bash
 git clone <this-repo-url>
-cd video-motion-editor
+cd claude-editor
 npm install
 npm run studio
 ```
