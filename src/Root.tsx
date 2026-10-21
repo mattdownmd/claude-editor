@@ -7,6 +7,7 @@ import { DesignSystem } from "./compositions/DesignSystem";
 import { MotionReel } from "./compositions/MotionReel";
 import { BrowserShot, browserShotSchema } from "./compositions/BrowserShot";
 import { WorkflowShot, workflowShotSchema } from "./compositions/WorkflowShot";
+import { LayoutCheckDemo, layoutCheckDemoSchema } from "./compositions/LayoutCheckDemo";
 import { layout } from "./style";
 
 /**
@@ -22,6 +23,21 @@ import { layout } from "./style";
 export const RemotionRoot: React.FC = () => {
   return (
     <>
+      {/*
+        The layout check, as a worked example. `broken` pushes one card onto
+        another and a caption off the frame; scripts/stills.mjs --qa reports both.
+      */}
+      <Composition
+        id="LayoutCheckDemo"
+        component={LayoutCheckDemo}
+        durationInFrames={30}
+        fps={layout.fps}
+        width={layout.width}
+        height={layout.height}
+        schema={layoutCheckDemoSchema}
+        defaultProps={{ broken: false }}
+      />
+
       {/* ---------- the system ---------- */}
       {/*
         Reference board. Every token with its hex, the type scale, and the

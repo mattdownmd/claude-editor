@@ -60,16 +60,25 @@ references/
 
 scripts/
   transcribe.mjs        turns a recording into word-level timings
+  gaps.py               finds the pauses, so cuts go in the gaps
+  cut.mjs               cuts a recording from a list of keepers, levels the voice
+  stills.mjs            preview stills, contact sheets, --qa layout check
+  final.mjs             the colour-safe final render (see "Final render")
+  track-cursor.py       finds the recorded mouse pointer in a screen recording
+  erase-cursor.py       paints it out so the drawn Cursor can replace it
 ```
 
 ## Prerequisites
 
 - [Node.js](https://nodejs.org) 20+
 - [Claude Code](https://claude.com/claude-code) — `npm install -g @anthropic-ai/claude-code`
+- [ffmpeg](https://ffmpeg.org) on your PATH, for cutting and the final render (`brew install ffmpeg`)
+- Python 3 with numpy, only for the cursor and gap tools (`pip3 install numpy`)
 
-That's it. **No separate ffmpeg or Whisper install.** Remotion ships its own
-ffmpeg, and `npm run transcribe` downloads and builds whisper.cpp itself the
-first time you run it (a few minutes; seconds after that).
+Transcription needs no install of its own: `npm run transcribe` downloads and
+builds whisper.cpp itself the first time you run it (a few minutes; seconds
+after that). It needs a C/C++ compiler and cmake (on a Mac: Xcode command line
+tools).
 
 Claude Code asks for your permission before it runs anything system-level —
 installing a package, running an unfamiliar command — the same way it did
@@ -123,6 +132,48 @@ starting point is the loop below.
    npx remotion render <CompositionId> out/<name>.mp4
    ```
 
+## Cut it first
+
+If the recording has pauses, filler words or retakes, cut it before anything
+else, then transcribe the *cut* file:
+
+```bash
+npm run gaps -- public/video/raw.mp4                          # where the pauses are
+npm run cut -- public/video/raw.mp4 edl.json                  # edl.json: [{"in": 2.4, "out": 8.1}, …]
+npm run transcribe -- public/video/aroll.mp4
+```
+
+`cut.mjs` snaps to frames, fades each splice, high-passes and levels the voice
+to -14 LUFS, and leaves the picture alone (add `--hlg` for iPhone HDR footage).
+Claude Code does this for you; it's in `CLAUDE.md`.
+
+## Check, then render
+
+```bash
+npm run stills -- --qa <CompositionId> out/qa 0 60 120    # layout check, prints "QA: clean" or the faults
+npm run final -- <CompositionId> --audio public/video/aroll.mp4
+```
+
+Use `npm run final`, not `remotion render`, for anything with a face in it:
+Remotion's own MP4 encode uses the SD colour matrix and skin plays back red.
+`final` renders the frames and encodes them with ffmpeg as BT.709.
+`--scale 1.3333333333333333` gives 1440p.
+
+`LayoutCheckDemo` in the Studio shows the layout check on a small example.
+
+## Start from nothing instead
+
+You don't need this repo to start. Make a folder, put your reference images in
+it, open an empty Claude Code session there and paste:
+
+> Hey Claude, I want you to be my video editor. Set up a project in this folder that edits my videos for me, and make it reusable, because I'll use it for every video from now on, each in a fresh chat. So write down whatever you'll need to remember in the project.
+>
+> The images in this folder are motion graphics I found on Pinterest. They're my style references. Study them and turn them into a style guide: colors, fonts, layouts. They're still images, so you decide how things should move. Come up with animation that fits this style and feels premium, with nothing static. Build reusable parts from it, like title cards, charts and diagrams.
+>
+> Build it with Remotion. For each recording, transcribe it locally with a timestamp on every word, cut the pauses, filler words and bad takes without ever clipping a word, and build motion graphics timed to what I say. Zoom in smoothly when I name something on screen, and on screen recordings replace the shaky cursor with a clean one. The final colors should match my original footage.
+>
+> Check your own work by looking at the frames before you show me anything, and show me a draft first. Ask me before you install anything, and add my corrections to the style guide so they stick.
+
 ## Making it yours
 
 Two things to change before your first real video:
@@ -140,3 +191,8 @@ compounds — your fifth video is faster to make than your first.
 ## License
 
 MIT — see [LICENSE](LICENSE).
+
+## Known limits
+
+- `track-cursor.py` matches the macOS pointer by template at 1920x1080. It finds it in most frames of a typical screen recording, not all; check the hit rate (lines with `e` below 40) before relying on it, and expect to tune the templates for a different display scale.
+- `IntroFull` needs a recording at `public/video/intro.mp4` and errors without one. Every other composition renders with no setup.

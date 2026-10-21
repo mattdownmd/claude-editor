@@ -12,7 +12,7 @@ const WHISPER_PATH = path.join(process.cwd(), "whisper.cpp");
 // 1.7.x or newer is required: token-level timestamps are passed as `--dtw`,
 // which older builds (1.5.x) don't recognise — they exit printing their help text.
 const WHISPER_VERSION = "1.7.4";
-const MODEL = "small.en";
+const MODEL = process.env.WHISPER_MODEL ?? "small.en";
 
 const input = process.argv[2];
 if (!input) {
@@ -29,7 +29,12 @@ await downloadWhisperModel({ folder: WHISPER_PATH, model: MODEL });
 
 // Must be absolute: whisper-cli is spawned from its own directory, so a
 // relative path here resolves against the wrong cwd and is reported missing.
-const wav = path.resolve("out", `${path.parse(input).name}.wav`);
+let wav = path.resolve("out", `${path.parse(input).name}.wav`);
+// Guard: a .wav input resolves to itself here, and ffmpeg -y would then
+// overwrite its own source mid-read and transcribe the fragment it left.
+if (wav === path.resolve(input)) {
+  wav = path.resolve("out", `${path.parse(input).name}.16k.wav`);
+}
 mkdirSync("out", { recursive: true });
 execSync(`npx remotion ffmpeg -i "${input}" -ar 16000 -ac 1 -y "${wav}"`, {
   stdio: "inherit",

@@ -7,7 +7,11 @@
     "studio": "remotion studio",
     "build": "remotion render",
     "upgrade": "remotion upgrade",
-    "transcribe": "node scripts/transcribe.mjs"
+    "transcribe": "node scripts/transcribe.mjs",
+    "gaps": "python3 scripts/gaps.py",
+    "cut": "node scripts/cut.mjs",
+    "stills": "node scripts/stills.mjs",
+    "final": "node scripts/final.mjs"
   },
   "keywords": [],
   "author": "",
